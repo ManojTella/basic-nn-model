@@ -6,11 +6,16 @@ To develop a neural network regression model for the given dataset.
 
 ## THEORY
 
-Explain the problem statement
+Neural networks consist of simple input/output units called neurons. These units are interconnected and each connection has a weight associated with it. Neural networks are flexible and can be used for both classification and regression. In this article, we will see how neural networks can be applied to regression problems.
+
+Regression helps in establishing a relationship between a dependent variable and one or more independent variables. Regression models work well only when the regression equation is a good fit for the data. Although neural networks are complex and computationally expensive, they are flexible and can dynamically pick the best type of regression, and if that is not enough, hidden layers can be added to improve prediction.
+
+Build your training and test set from the dataset, here we are making the neural network 3 hidden layer with activation layer as relu and with their nodes in them. Now we will fit our dataset and then predict the value.
 
 ## Neural Network Model
 
-Include the neural network model diagram.
+![image](https://github.com/ManojTella/basic-nn-model/assets/94883876/c9db847e-709b-47e6-8654-99a5623087b2)
+
 
 ## DESIGN STEPS
 
@@ -43,25 +48,82 @@ Plot the performance plot
 Evaluate the model with the testing data.
 
 ## PROGRAM
+Developed By : Manoj Guna Sundar Tella.
+Reg No : 212221240026.
+```
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
 
-Include your code here
+from google.colab import auth
+import gspread
+from google.auth import default
+auth.authenticate_user()
+creds, _ = default()
+gc = gspread.authorize(creds)
 
+worksheet = gc.open('dl-1').sheet1
+rows = worksheet.get_all_values()
+
+dataset1 = pd.DataFrame(rows[1:], columns=rows[0])
+dataset1 = dataset1.astype({'input':'float'})
+dataset1 = dataset1.astype({'output':'float'})
+
+dataset1.head()
+
+X=dataset1[{'input'}].values
+Y=dataset1[{'output'}].values
+X
+
+X_train,X_test,Y_train,Y_test = train_test_split(X,Y,test_size = 0.33, random_state = 33)
+Scaler = MinMaxScaler()
+Scaler.fit(X_train)
+X_train1 = Scaler.transform(X_train)
+
+model = Sequential([
+  Dense(8,activation = 'relu'),
+  Dense(10,activation ='relu'),
+  Dense(1)
+])
+
+model.compile(optimizer='rmsprop',loss='mse')
+model.fit(X_train1,Y_train,epochs=2000)
+
+## Plot the loss
+loss_df = pd.DataFrame(model.history.history)
+loss_df.plot()
+
+## Evaluate the model
+X_test1 = Scaler.transform(X_test)
+model.evaluate(X_test1,Y_test)
+
+# Prediction
+X_n1 = [[30]]
+X_n1_1 = Scaler.transform(X_n1)
+model.predict(X_n1_1)
+
+```
 ## Dataset Information
+![image](https://github.com/ManojTella/basic-nn-model/assets/94883876/6f3f0975-b379-41f4-87c5-dde13b09f471)
 
-Include screenshot of the dataset
 
 ## OUTPUT
 
 ### Training Loss Vs Iteration Plot
 
-Include your plot here
+![image](https://github.com/ManojTella/basic-nn-model/assets/94883876/8c73b66d-0330-4d63-b693-fa4ba4e5228e)
+
 
 ### Test Data Root Mean Squared Error
 
-Find the test data root mean squared error
+![image](https://github.com/ManojTella/basic-nn-model/assets/94883876/34771f37-d855-48fc-b763-b516298aa81f)
 
 ### New Sample Data Prediction
 
-Include your sample input and output here
+![image](https://github.com/ManojTella/basic-nn-model/assets/94883876/4ce77e62-2f98-4183-bb7d-10a2af5515bf)
+
 
 ## RESULT
+Thus a neural network regression model for the given dataset is written and executed successfully.
